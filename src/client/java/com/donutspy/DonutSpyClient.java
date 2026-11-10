@@ -41,10 +41,10 @@ public final class DonutSpyClient implements ClientModInitializer {
             }
 
             while (OPEN_MENU.consumeClick()) {
-                if (client.gui.screen() instanceof DonutSpyScreen) {
-                    client.gui.setScreen(null);
-                } else if (client.gui.screen() == null) {
-                    client.gui.setScreen(new DonutSpyScreen());
+                if (client.screen instanceof DonutSpyScreen) {
+                    client.setScreen(null);
+                } else if (client.screen == null) {
+                    client.setScreen(new DonutSpyScreen());
                 }
             }
         });
