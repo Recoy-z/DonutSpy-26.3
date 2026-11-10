@@ -1,24 +1,34 @@
 package com.donutspy;
 
 import com.donutspy.config.DonutSpyConfig;
+import com.donutspy.gui.DonutSpyScreen;
 import com.donutspy.sound.SoundHistory;
 import com.donutspy.sound.SoundCaptureListener;
 import com.donutspy.render.SoundHud;
-import net.minecraft.client.Minecraft;
+import com.mojang.blaze3d.platform.InputConstants;
+import net.minecraft.client.KeyMapping;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 
 public final class DonutSpyClient implements ClientModInitializer {
+    private static final KeyMapping OPEN_MENU = new KeyMapping(
+            "key.donutspy.open",
+            InputConstants.Type.KEYBOARD,
+            InputConstants.KEY_RSHIFT,
+            KeyMapping.Category.MISC
+    );
+
     private Object lastWorld;
 
     @Override
     public void onInitializeClient() {
         DonutSpyConfig.load();
         SoundHud.register();
+        KeyMappingHelper.registerKeyMapping(OPEN_MENU);
 
         // Minecraft's SoundManager is not ready during mod entrypoint initialization.
-        // Wait until the client has fully started before registering our listener.
         ClientLifecycleEvents.CLIENT_STARTED.register(client ->
                 client.getSoundManager().addListener(SoundCaptureListener.INSTANCE)
         );
@@ -28,6 +38,14 @@ public final class DonutSpyClient implements ClientModInitializer {
             if (currentWorld != lastWorld) {
                 lastWorld = currentWorld;
                 SoundHistory.clear();
+            }
+
+            while (OPEN_MENU.consumeClick()) {
+                if (client.gui.screen() instanceof DonutSpyScreen) {
+                    client.gui.setScreen(null);
+                } else if (client.gui.screen() == null) {
+                    client.gui.setScreen(new DonutSpyScreen());
+                }
             }
         });
     }
