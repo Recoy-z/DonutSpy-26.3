@@ -1,0 +1,12 @@
+{
+  "required": true,
+  "package": "com.donutspy.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "client": [
+    "SoundSystemMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "refmap": "donutspy-refmap.json"
+}

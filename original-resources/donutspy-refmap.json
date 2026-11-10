@@ -1,0 +1,14 @@
+{
+  "mappings": {
+    "com/donutspy/mixin/SoundSystemMixin": {
+      "play(Lnet/minecraft/client/sound/SoundInstance;)V": "Lnet/minecraft/class_1140;method_4854(Lnet/minecraft/class_1113;)V"
+    }
+  },
+  "data": {
+    "named:intermediary": {
+      "com/donutspy/mixin/SoundSystemMixin": {
+        "play(Lnet/minecraft/client/sound/SoundInstance;)V": "Lnet/minecraft/class_1140;method_4854(Lnet/minecraft/class_1113;)V"
+      }
+    }
+  }
+}
