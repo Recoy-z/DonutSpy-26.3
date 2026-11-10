@@ -2,6 +2,8 @@ package com.donutspy;
 
 import com.donutspy.config.DonutSpyConfig;
 import com.donutspy.sound.SoundHistory;
+import com.donutspy.sound.SoundCaptureListener;
+import net.minecraft.client.Minecraft;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 
@@ -11,6 +13,7 @@ public final class DonutSpyClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         DonutSpyConfig.load();
+        Minecraft.getInstance().getSoundManager().addListener(SoundCaptureListener.INSTANCE);
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             Object currentWorld = client.level;
             if (currentWorld != lastWorld) {
