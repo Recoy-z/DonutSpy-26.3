@@ -72,7 +72,7 @@ public final class DonutSpyScreen extends Screen {
 
         // Center module cards
         int centerX = left + 116;
-        int centerWidth = panelWidth - 326;
+        int centerWidth = Math.max(0, panelWidth - 326);
         int cardY = top + 105;
         String[] visible = visibleModules();
         for (int i = 0; i < visible.length; i++) {
@@ -126,6 +126,13 @@ public final class DonutSpyScreen extends Screen {
     }
 
     private void addButton(String label, int x, int y, int width, int height, Runnable action) {
+        // Never register a widget outside the actual GUI viewport. Minecraft 26.3
+        // clips some GUI draws, and an off-screen widget can produce a zero-height scissor.
+        if (width <= 0 || height <= 0 || x < 0 || y < 0
+                || x + width > this.width || y + height > this.height) {
+            return;
+        }
+
         this.addRenderableWidget(Button.builder(Component.literal(label),
                 button -> action.run()).bounds(x, y, width, height).build());
     }
@@ -223,23 +230,25 @@ public final class DonutSpyScreen extends Screen {
         // Module cards behind their clickable controls.
         String[] visible = visibleModules();
         int centerX = left + 123;
-        int centerWidth = panelWidth - 326;
+        int centerWidth = Math.max(0, panelWidth - 326);
         int cardY = top + 105;
         for (int i = 0; i < visible.length; i++) {
             String module = visible[i];
             int y = cardY + i * 61;
             boolean selected = selectedModule.equals(module);
-            graphics.fill(centerX + 4, y - 2, centerX + centerWidth - 4, y + 45,
-                    selected ? 0xFF343A31 : 0xFF202630);
-            if (selected) {
-                graphics.outline(centerX + 4, y - 2, centerWidth - 8, 47, 0xFF9B9B63);
+            if (centerWidth >= 100 && y + 45 < top + panelHeight - 30) {
+                graphics.fill(centerX + 4, y - 2, centerX + centerWidth - 4, y + 45,
+                        selected ? 0xFF343A31 : 0xFF202630);
+                if (selected) {
+                    graphics.outline(centerX + 4, y - 2, centerWidth - 8, 47, 0xFF9B9B63);
+                }
+                graphics.text(this.font, module, centerX + 15, y + 7, 0xFFE7EAF0, true);
+                graphics.text(this.font, descriptionFor(module), centerX + 15, y + 23,
+                        0xFFAAB3C0, false);
+                graphics.text(this.font, isEnabled(module) ? "ACTIVE" : "INACTIVE",
+                        centerX + centerWidth - 72, y + 15,
+                        isEnabled(module) ? 0xFFD9D58A : 0xFF929BA8, true);
             }
-            graphics.text(this.font, module, centerX + 15, y + 7, 0xFFE7EAF0, true);
-            graphics.text(this.font, descriptionFor(module), centerX + 15, y + 23,
-                    0xFFAAB3C0, false);
-            graphics.text(this.font, isEnabled(module) ? "ACTIVE" : "INACTIVE",
-                    centerX + centerWidth - 72, y + 15,
-                    isEnabled(module) ? 0xFFD9D58A : 0xFF929BA8, true);
         }
 
         // Settings panel separators and small footer.
