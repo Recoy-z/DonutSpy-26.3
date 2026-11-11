@@ -38,14 +38,14 @@ public final class DonutSpyScreen extends Screen {
             final int tab = i;
             this.addRenderableWidget(Button.builder(
                     Component.literal((i == selectedTab ? "• " : "") + TABS[i]),
-                    button -> this.minecraft.setScreen(new DonutSpyScreen(tab))
+                    button -> this.minecraft.gui.setScreen(new DonutSpyScreen(tab))
             ).bounds(left + 16 + i * tabWidth, tabY, tabWidth - 5, 22).build());
         }
 
         int contentY = tabY + 42;
         if (selectedTab == 0) {
             addActionButton("Open Event Log", left + 18, contentY + 180, 150,
-                    () -> this.minecraft.setScreen(new DonutSpyScreen(1)));
+                    () -> this.minecraft.gui.setScreen(new DonutSpyScreen(1)));
             addActionButton("Toggle Capture", left + 180, contentY + 180, 150,
                     () -> toggle("capture"));
             addActionButton("Clear History", left + 342, contentY + 180, 130,
@@ -81,7 +81,7 @@ public final class DonutSpyScreen extends Screen {
         }
 
         this.addRenderableWidget(Button.builder(Component.literal("Close"),
-                button -> this.minecraft.setScreen(null))
+                button -> this.minecraft.gui.setScreen(null))
                 .bounds(this.width / 2 - 45, this.height - 30, 90, 20).build());
     }
 
@@ -89,7 +89,7 @@ public final class DonutSpyScreen extends Screen {
         this.addRenderableWidget(Button.builder(Component.literal(label), button -> {
             action.run();
             if (selectedTab == 2) {
-                this.minecraft.setScreen(new DonutSpyScreen(2));
+                this.minecraft.gui.setScreen(new DonutSpyScreen(2));
             }
         }).bounds(x, y, width, 22).build());
     }
