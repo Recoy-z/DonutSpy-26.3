@@ -113,8 +113,8 @@ public final class DonutSpyScreen extends Screen {
             }
         }
 
-        addSafeButton("Close", this.width / 2 - 45, Math.min(this.height - 30, top + 370),
-                90, 22, () -> this.minecraft.gui.setScreen(null));
+        addSafeButton("Close", this.width / 2 - 45, top + 335,
+                90, 24, () -> this.minecraft.gui.setScreen(null));
     }
 
     private void addSafeButton(String label, int x, int y, int width, int height, Runnable action) {
