@@ -58,7 +58,7 @@ public final class DonutSpyScreen extends Screen {
 
         int contentLeft = left + 22;
         int contentWidth = panelWidth - 44;
-        int contentTop = top + 153;
+        int contentTop = top + 155;
         int rowWidth = Math.min(270, (contentWidth - 20) / 2);
 
         switch (selectedTab) {
@@ -66,21 +66,21 @@ public final class DonutSpyScreen extends Screen {
                 addToggle("Sound capture", DonutSpyConfig.current().captureEnabled,
                         contentLeft, contentTop, contentWidth, "capture");
                 addToggle("Movement sounds", DonutSpyConfig.current().movementSounds,
-                        contentLeft, contentTop + 48, rowWidth, "movement");
+                        contentLeft, contentTop + 36, rowWidth, "movement");
                 addToggle("Combat sounds", DonutSpyConfig.current().combatSounds,
-                        contentLeft + rowWidth + 12, contentTop + 48, rowWidth, "combat");
+                        contentLeft + rowWidth + 12, contentTop + 36, rowWidth, "combat");
                 addToggle("Transport sounds", DonutSpyConfig.current().transportSounds,
-                        contentLeft, contentTop + 82, rowWidth, "transport");
+                        contentLeft, contentTop + 70, rowWidth, "transport");
                 addToggle("Explosions", DonutSpyConfig.current().explosionSounds,
-                        contentLeft + rowWidth + 12, contentTop + 82, rowWidth, "explosions");
+                        contentLeft + rowWidth + 12, contentTop + 70, rowWidth, "explosions");
                 addToggle("Farming", DonutSpyConfig.current().farmingSounds,
-                        contentLeft, contentTop + 116, rowWidth, "farming");
+                        contentLeft, contentTop + 104, rowWidth, "farming");
                 addToggle("Sculk", DonutSpyConfig.current().sculkSounds,
-                        contentLeft + rowWidth + 12, contentTop + 116, rowWidth, "sculk");
+                        contentLeft + rowWidth + 12, contentTop + 104, rowWidth, "sculk");
                 addToggle("Natural sounds", DonutSpyConfig.current().naturalSounds,
-                        contentLeft, contentTop + 150, rowWidth, "natural");
+                        contentLeft, contentTop + 138, rowWidth, "natural");
                 addToggle("Other sounds", DonutSpyConfig.current().customSounds,
-                        contentLeft + rowWidth + 12, contentTop + 150, rowWidth, "custom");
+                        contentLeft + rowWidth + 12, contentTop + 138, rowWidth, "custom");
             }
             case 1 -> {
                 addToggle("Enable sound markers", DonutSpyConfig.current().soundOutlineEnabled,
