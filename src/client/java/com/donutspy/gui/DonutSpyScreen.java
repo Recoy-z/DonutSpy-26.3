@@ -122,8 +122,11 @@ public final class DonutSpyScreen extends Screen {
                 || x + width > this.width || y + height > this.height) {
             return;
         }
-        this.addRenderableWidget(Button.builder(Component.literal(label),
-                button -> action.run()).bounds(x, y, width, height).build());
+        Button hitbox = Button.builder(Component.literal(label),
+                button -> action.run()).bounds(x, y, width, height).build();
+        // Keep the real clickable widget, but draw our own flat client-style control.
+        hitbox.setAlpha(0.0F);
+        this.addRenderableWidget(hitbox);
     }
 
     private void addButton(String label, int x, int y, int width, int height, Runnable action) {
@@ -193,10 +196,14 @@ public final class DonutSpyScreen extends Screen {
             int x = left + 12 + i * (tabWidth + gap);
             boolean active = i == selectedTab;
             graphics.fill(x, tabsY - 3, x + tabWidth, tabsY + 25,
-                    active ? 0xFF303A35 : 0xFF202630);
+                    active ? 0xFF354237 : 0xFF222A35);
+            graphics.outline(x, tabsY - 3, tabWidth, 28,
+                    active ? 0xFF77865E : 0xFF3A4654);
             if (active) {
                 graphics.fill(x + 5, tabsY + 23, x + tabWidth - 5, tabsY + 25, ACCENT);
             }
+            graphics.centeredText(this.font, TABS[i], x + tabWidth / 2, tabsY + 7,
+                    active ? 0xFFF0F1D7 : TEXT);
         }
 
         // Content area
@@ -207,6 +214,31 @@ public final class DonutSpyScreen extends Screen {
         graphics.text(this.font, description(selectedTab), contentLeft, contentTop + 17, MUTED, false);
         graphics.fill(contentLeft, contentTop + 36, contentLeft + contentWidth,
                 contentTop + 37, LINE);
+
+        // Flat, compact setting rows. Invisible button hitboxes sit over these controls.
+        DonutSpyConfig cfg = DonutSpyConfig.current();
+        if (selectedTab == 0) {
+            drawToggleRow(graphics, contentLeft, contentTop + 52, contentWidth, "Sound capture", cfg.captureEnabled);
+            drawToggleRow(graphics, contentLeft, contentTop + 88, (contentWidth - 12) / 2, "Movement sounds", cfg.movementSounds);
+            drawToggleRow(graphics, contentLeft + (contentWidth + 12) / 2, contentTop + 88, (contentWidth - 12) / 2, "Combat sounds", cfg.combatSounds);
+            drawToggleRow(graphics, contentLeft, contentTop + 122, (contentWidth - 12) / 2, "Transport sounds", cfg.transportSounds);
+            drawToggleRow(graphics, contentLeft + (contentWidth + 12) / 2, contentTop + 122, (contentWidth - 12) / 2, "Explosions", cfg.explosionSounds);
+            drawToggleRow(graphics, contentLeft, contentTop + 156, (contentWidth - 12) / 2, "Farming", cfg.farmingSounds);
+            drawToggleRow(graphics, contentLeft + (contentWidth + 12) / 2, contentTop + 156, (contentWidth - 12) / 2, "Sculk", cfg.sculkSounds);
+            drawToggleRow(graphics, contentLeft, contentTop + 190, (contentWidth - 12) / 2, "Natural sounds", cfg.naturalSounds);
+            drawToggleRow(graphics, contentLeft + (contentWidth + 12) / 2, contentTop + 190, (contentWidth - 12) / 2, "Other sounds", cfg.customSounds);
+        } else if (selectedTab == 1) {
+            drawToggleRow(graphics, contentLeft, contentTop + 52, contentWidth, "Enable sound markers", cfg.soundOutlineEnabled);
+        } else if (selectedTab == 2) {
+            drawToggleRow(graphics, contentLeft, contentTop + 52, contentWidth, "Enable DonutSpy HUD", cfg.hudEnabled);
+            drawToggleRow(graphics, contentLeft, contentTop + 88, contentWidth, "Show coordinates", cfg.showCoordinates);
+        } else if (selectedTab == 3) {
+            drawToggleRow(graphics, contentLeft, contentTop + 52, contentWidth, "Enable ore overlay", cfg.oreOverlayEnabled);
+        } else if (selectedTab == 4) {
+            graphics.fill(contentLeft, contentTop + 52, contentLeft + 190, contentTop + 80, 0xFF293440);
+            graphics.outline(contentLeft, contentTop + 52, 190, 28, 0xFF526173);
+            graphics.centeredText(this.font, "Clear event history", contentLeft + 95, contentTop + 61, TEXT);
+        }
 
         if (selectedTab == 1) {
             drawInfoRow(graphics, contentLeft, contentTop + 112, "Marker lifetime",
@@ -235,6 +267,11 @@ public final class DonutSpyScreen extends Screen {
                     contentLeft, contentTop + 102, MUTED, false);
         }
 
+        // Close control and understated footer.
+        graphics.fill(this.width / 2 - 45, bottom - 55, this.width / 2 + 45, bottom - 31, 0xFF293440);
+        graphics.outline(this.width / 2 - 45, bottom - 55, 90, 24, 0xFF526173);
+        graphics.centeredText(this.font, "Close", this.width / 2, bottom - 47, TEXT);
+
         graphics.fill(left + 14, bottom - 31, right - 14, bottom - 30, LINE);
         graphics.text(this.font, "DONUTSPY  /  " + (selectedTab + 1) + " OF " + TABS.length,
                 left + 18, bottom - 20, MUTED, false);
@@ -242,6 +279,21 @@ public final class DonutSpyScreen extends Screen {
                 right - 170, bottom - 20, MUTED, false);
 
         super.extractRenderState(graphics, mouseX, mouseY, delta);
+    }
+
+    private void drawToggleRow(GuiGraphicsExtractor graphics, int x, int y, int width,
+                               String label, boolean enabled) {
+        graphics.fill(x, y, x + width, y + 29, 0xFF222B36);
+        graphics.outline(x, y, width, 29, 0xFF394654);
+        graphics.text(this.font, label, x + 10, y + 9, TEXT, false);
+        int switchWidth = 34;
+        int switchX = x + width - switchWidth - 9;
+        graphics.fill(switchX, y + 6, switchX + switchWidth, y + 23,
+                enabled ? 0xFF65734B : 0xFF414B59);
+        graphics.fill(switchX + (enabled ? 18 : 2), y + 8,
+                switchX + (enabled ? 30 : 14), y + 21, 0xFFE9EDF0);
+        graphics.text(this.font, enabled ? "ON" : "OFF",
+                switchX - 27, y + 10, enabled ? ACCENT : MUTED, true);
     }
 
     private String description(int tab) {
