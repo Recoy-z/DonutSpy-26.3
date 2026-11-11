@@ -58,7 +58,7 @@ public final class DonutSpyScreen extends Screen {
 
         int contentLeft = left + 22;
         int contentWidth = panelWidth - 44;
-        int contentTop = top + 126;
+        int contentTop = top + 153;
         int rowWidth = Math.min(270, (contentWidth - 20) / 2);
 
         switch (selectedTab) {
